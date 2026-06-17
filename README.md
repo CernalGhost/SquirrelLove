@@ -28,16 +28,19 @@ What SquirrelLove does is keep that key useful:
 
 ## Achievements covered
 
-- To All the Squirrels I've Loved Before — Eastern Kingdoms / Kalimdor (1206)
-- To All the Squirrels Who Shared My Life — Northrend (2557)
-- To All the Squirrels Who Cared for Me — Cataclysm (5548)
-- To All the Squirrels I Once Caressed — Pandaria (6350)
-- To All the Squirrels Through Time and Space — Draenor (14728)
-- To All the Squirrels I Love Despite Their Scars — Legion (14729)
-- To All the Squirrels I Set Sail to See — Battle for Azeroth (14730)
-- To All the Squirrels I've Loved and Lost — Shadowlands (14731)
-- To All the Squirrels Hidden Til Now — Dragon Isles (16729)
-- To All the Squirrels Burrowed Beneath — Zaralek Cavern (18361)
+| Achievement | Region |
+|---|---|
+| [To All the Squirrels I've Loved Before](https://www.wowhead.com/achievement=1206) | Eastern Kingdoms / Kalimdor |
+| [To All the Squirrels Who Shared My Life](https://www.wowhead.com/achievement=2557) | Northrend |
+| [To All the Squirrels Who Cared for Me](https://www.wowhead.com/achievement=5548) | Cataclysm |
+| [To All the Squirrels I Once Caressed](https://www.wowhead.com/achievement=6350) | Pandaria |
+| [To All the Squirrels Through Time and Space](https://www.wowhead.com/achievement=14728) | Draenor |
+| [To All the Squirrels I Love Despite Their Scars](https://www.wowhead.com/achievement=14729) | Legion |
+| [To All the Squirrels I Set Sail to See](https://www.wowhead.com/achievement=14730) | Battle for Azeroth |
+| [To All the Squirrels I've Loved and Lost](https://www.wowhead.com/achievement=14731) | Shadowlands |
+| [To All the Squirrels Hidden Til Now](https://www.wowhead.com/achievement=16729) | Dragon Isles |
+| [To All the Squirrels Burrowed Beneath](https://www.wowhead.com/achievement=18361) | Zaralek Cavern |
+| [Pest Control](https://www.wowhead.com/achievement=2556) *(kill pests; TomTom waypoints only)* | — |
 
 Every critter name is read live from each achievement's in-game criteria, so
 the addon always reflects your real progress and needs no hand-maintained
@@ -76,6 +79,10 @@ critter lists.
 | `/sqlove status` | Print how many critters remain |
 | `/sqlove killway` | Load Pest Control kill waypoints (TomTom) |
 | `/sqlove debug` | Print internal state (for support) |
+
+## Contributing
+
+Bug reports, feature ideas, and pull requests are welcome. See [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## License
 

@@ -1,0 +1,61 @@
+name: Bug report
+description: Something is broken or not working as expected
+title: "[Bug]: "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for the report. Please search [open issues](https://github.com/CernalGhost/SquirrelLove/issues) first.
+  - type: input
+    id: version
+    attributes:
+      label: SquirrelLove version
+      description: From the AddOns list or chat on `/reload`
+      placeholder: "1.0.10"
+    validations:
+      required: true
+  - type: input
+    id: wow-version
+    attributes:
+      label: WoW client version
+      placeholder: "e.g. 11.2.7"
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. /reload with TomTom enabled
+        2. /sqlove grab
+        3. ...
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: What actually happened
+    validations:
+      required: true
+  - type: textarea
+    id: errors
+    attributes:
+      label: Lua errors (if any)
+      description: Run `/console scriptErrors 1` then `/reload` and paste the error
+  - type: textarea
+    id: addons
+    attributes:
+      label: Other addons enabled
+      placeholder: TomTom, etc.
+  - type: textarea
+    id: extra
+    attributes:
+      label: Anything else
+      description: Achievement progress, `/sqlove debug` output, screenshots
