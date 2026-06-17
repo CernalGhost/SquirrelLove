@@ -1,0 +1,17 @@
+## Interface: 110207, 110205, 110200, 120000
+## Title: SquirrelLove
+## Notes: Self-advancing macro that targets critters and /love's them for the "To All the Squirrels..." achievements, plus TomTom waypoints.
+## Author: CernalGhost
+## Version: 1.0.10
+## SavedVariables: SquirrelLoveDB
+## OptionalDeps: TomTom
+## IconTexture: 3732476
+## Category-enUS: Achievements
+## X-Curse-Project-ID: 0
+## X-Wago-ID:
+## X-Website: https://github.com/CernalGhost/SquirrelLove
+
+# If the addon shows as "out of date" and won't run, tick
+# "Load out of date AddOns" on the AddOns screen -- that always works.
+
+SquirrelLove.lua
