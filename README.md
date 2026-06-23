@@ -1,12 +1,12 @@
 # SquirrelLove
 
 A World of Warcraft (Retail) addon that helps you finish the **"To All the
-Squirrels..."** critter-hugging achievement series and **Pest Control**. It keeps a smart macro
+Squirrels..."** and **"To All the Slimes..."** critter-hugging achievement series and **Pest Control**. It keeps a smart macro
 up to date so you can target and `/love` the critters you still need, and it
 can drop TomTom waypoints for the critter hunt.
 
 **Author:** CernalGhost  
-**Version:** 1.0.10
+**Version:** 1.0.11
 
 ---
 
@@ -40,6 +40,7 @@ What SquirrelLove does is keep that key useful:
 | [To All the Squirrels I've Loved and Lost](https://www.wowhead.com/achievement=14731) | Shadowlands |
 | [To All the Squirrels Hidden Til Now](https://www.wowhead.com/achievement=16729) | Dragon Isles |
 | [To All the Squirrels Burrowed Beneath](https://www.wowhead.com/achievement=18361) | Zaralek Cavern |
+| [To All the Slimes I Love](https://www.wowhead.com/achievement=40475) | The Ringing Deeps |
 | [Pest Control](https://www.wowhead.com/achievement=2556) *(kill pests; TomTom waypoints only)* | — |
 
 Every critter name is read live from each achievement's in-game criteria, so
@@ -52,7 +53,7 @@ critter lists.
    `World of Warcraft\_retail_\Interface\AddOns\SquirrelLove\`
    with `SquirrelLove.toc` and `SquirrelLove.lua` directly inside it.
 2. Restart WoW or `/reload`.
-3. You should see `[SquirrelLove] v1.0.10 loaded` in chat. If not, see
+3. You should see `[SquirrelLove] v1.0.11 loaded` in chat. If not, see
    Troubleshooting below.
 
 ## Usage

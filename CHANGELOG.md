@@ -1,5 +1,10 @@
 # SquirrelLove - Changelog
 
+## 1.0.11
+
+- Added [To All the Slimes I Love](https://www.wowhead.com/achievement=40475)
+  (The Ringing Deeps, 40475) with 18 TomTom waypoints.
+
 ## 1.0.10
 
 - Rebuilt critter waypoints from Wowhead with explicit zone coordinates.

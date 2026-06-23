@@ -15,7 +15,7 @@
 local MACRO_NAME = "SquirrelLove"
 local MACRO_ICON = 3732476         -- inv_squirrelflying
 local MAX_MACRO  = 255
-local VERSION    = "1.0.10"
+local VERSION    = "1.0.11"
 
 local PAW_ICON = "|TInterface\\Icons\\INV_Pet_BattlePetTraining:12:12|t"
 
@@ -41,6 +41,7 @@ local ACHIEVEMENTS = {
   { id = 14731, title = "To All the Squirrels I've Loved and Lost",        region = "SL" },
   { id = 16729, title = "To All the Squirrels Hidden Til Now",             region = "DI" },
   { id = 18361, title = "To All the Squirrels Burrowed Beneath",           region = "Zaralek" },
+  { id = 40475, title = "To All the Slimes I Love",                        region = "RD" },
 }
 
 local REGION_NAMES = {
@@ -54,6 +55,7 @@ local REGION_NAMES = {
   ["SL"]      = "Shadowlands",
   ["DI"]      = "Dragon Isles",
   ["Zaralek"] = "Zaralek Cavern",
+  ["RD"]      = "The Ringing Deeps",
 }
 
 -- A few achievement criteria use a generic name (e.g. "Crab") while the
@@ -242,6 +244,25 @@ local WAYPOINTS = {
   "Zaralek Cavern 36.51 53.05 Magma Bubble",
   "Zaralek Cavern 50.03 64.69 Scuttering Beetle",
   "Zaralek Cavern 44.91 77.71 Aimless Snail",
+  -- To All the Slimes I Love (40475) — The Ringing Deeps
+  "The Ringing Deeps 53.95 67.55 Spring Mole",
+  "The Ringing Deeps 47.25 15.34 Snake",
+  "The Ringing Deeps 60.50 32.61 Lightdarter",
+  "The Ringing Deeps 48.62 54.62 Tiny Sporbit",
+  "The Ringing Deeps 37.81 16.79 Dustcrawler Beetle",
+  "The Ringing Deeps 56.50 92.35 Mass of Worms",
+  "The Ringing Deeps 54.90 68.95 Grottoscale Hatchling",
+  "The Ringing Deeps 50.58 29.76 Crackcreeper",
+  "The Ringing Deeps 44.49 12.46 Lava Slug",
+  "The Ringing Deeps 41.76 13.57 Earthenwork Stoneskitterer",
+  "The Ringing Deeps 69.24 41.46 Cavern Skiplet",
+  "The Ringing Deeps 53.25 65.78 Moss Sludglet",
+  "The Ringing Deeps 37.92 16.39 Cavern Mote",
+  "The Ringing Deeps 57.74 30.41 Stumblegrub",
+  "The Ringing Deeps 50.23 34.77 Darkgrotto Hopper",
+  "The Ringing Deeps 60.87 41.32 Oozeling (inside a cave)",
+  "The Ringing Deeps 55.24 45.73 Pebble Scarab",
+  "The Ringing Deeps 38.27 14.52 Rock Snail",
 }
 
 -- Pest Control (2556): one or more TomTom pins per pest type.
@@ -291,7 +312,9 @@ local function Print(text)
 end
 
 local function ShortTitle(title)
-  return (title:gsub("^To All [Tt]he Squirrels%s*", ""))
+  title = title:gsub("^To All [Tt]he Squirrels%s*", "")
+  title = title:gsub("^To All [Tt]he Slimes%s*", "")
+  return title
 end
 
 local function RegionLong(tag)
