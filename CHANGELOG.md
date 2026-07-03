@@ -1,5 +1,9 @@
 # SquirrelLove - Changelog
 
+## 1.0.13
+
+- Panel and docs now say `/love` instead of "hug" (the emote used by the macro).
+
 ## 1.0.12
 
 - Added `/sl` as a slash-command alias for `/sqlove`.

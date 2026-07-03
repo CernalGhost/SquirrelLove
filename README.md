@@ -4,10 +4,10 @@
 
 **Finish the entire "To All the Squirrels…" critter achievement line and Pest Control without spreadsheets, guesswork, or tabbing out to Wowhead.**
 
-SquirrelLove tracks which critters you still need, builds a smart macro that targets and `/love`s them, and drops TomTom waypoints for every location. Press one key near a pack of critters — the macro hugs what you need, skips what you've already done, and automatically advances to the next batch.
+SquirrelLove tracks which critters you still need, builds a smart macro that targets and `/love`s them, and drops TomTom waypoints for every location. Press one key near a pack of critters — the macro `/love`s what you need, skips what you've already done, and automatically advances to the next batch.
 
 **Author:** CernalGhost  
-**Version:** 1.0.12  
+**Version:** 1.0.13  
 **Slash command:** `/sqlove` or `/sl`  
 **Download:** [CurseForge (preview — moderation)](https://www.curseforge.com/wow/addons/squirrel-love/preview) · [GitHub](https://github.com/CernalGhost/SquirrelLove)
 
@@ -16,7 +16,7 @@ SquirrelLove tracks which critters you still need, builds a smart macro that tar
 ## Features
 
 - **Live progress tracking** — reads achievement criteria from the game, so completed achievements and already-loved critters are skipped automatically.
-- **Self-advancing macro** — creates a macro named `SquirrelLove` with `/tar` lines for critters you still need. Macros cap at 255 characters, so the list is split into pages; each press hugs nearby critters, then flips to the next page. When everything's done, the macro becomes a harmless no-op.
+- **Self-advancing macro** — creates a macro named `SquirrelLove` with `/tar` lines for critters you still need. Macros cap at 255 characters, so the list is split into pages; each press `/love`s nearby critters, then flips to the next page. When everything's done, the macro becomes a harmless no-op.
 - **Progress window** — lists all achievements with completion status; click any row to open it in the Achievement panel.
 - **TomTom waypoints** — one button drops 100+ critter-hunt waypoints into TomTom, plus Pest Control kill waypoints.
 - **Minimap button** — left-click toggles the window, right-click hides the button.
@@ -69,7 +69,7 @@ Enable **Load out of date AddOns** if the Interface number lags a patch.
 
 1. Open the window with `/sqlove` or the minimap button.
 2. Click **Grab Macro** and drop it on an action bar.
-3. Stand near critters and press the key — each press hugs what you still need and advances to the next page.
+3. Stand near critters and press the key — each press `/love`s what you still need and advances to the next page.
 4. Use **Add TomTom Waypoints** to load critter locations (clear later with `/way reset all`).
 
 ## Troubleshooting

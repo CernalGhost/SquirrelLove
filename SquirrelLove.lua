@@ -8,14 +8,14 @@
 --  the player still presses a key. This addon keeps the macro current:
 --    * reads each achievement's criteria live (completed ones skipped)
 --    * builds a "SquirrelLove" macro of /tar lines split into 255-char
---      pages; each press hugs nearby critters then flips to the next
+--      pages; each press /love's nearby critters then flips to the next
 --    * when everything is done the macro becomes a harmless no-op.
 --=====================================================================
 
 local MACRO_NAME = "SquirrelLove"
 local MACRO_ICON = 3732476         -- inv_squirrelflying
 local MAX_MACRO  = 255
-local VERSION    = "1.0.12"
+local VERSION    = "1.0.13"
 
 local PAW_ICON = "|TInterface\\Icons\\INV_Pet_BattlePetTraining:12:12|t"
 
@@ -852,7 +852,7 @@ local function BuildUI()
   hint:SetPoint("TOPRIGHT", petHint, "BOTTOMRIGHT", 0, -8)
   hint:SetJustifyH("LEFT")
   hint:SetText("Put the macro on an action bar and spam it while standing " ..
-    "among critters. Each press hugs nearby critters, then flips to the " ..
+    "among critters. Each press /love's nearby critters, then flips to the " ..
     "next page.  Click an achievement to open it.")
 
   local function MakeButton(label)
