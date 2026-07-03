@@ -1,5 +1,11 @@
 # SquirrelLove - Changelog
 
+## 1.0.12
+
+- Added `/sl` as a slash-command alias for `/sqlove`.
+- Bumped `## Interface:` for retail 12.0.7 (`120007`) and PTR 12.1.0
+  (`120100`).
+
 ## 1.0.11
 
 - Added [To All the Slimes I Love](https://www.wowhead.com/achievement=40475)

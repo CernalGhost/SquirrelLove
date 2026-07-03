@@ -72,7 +72,7 @@ critter lists.
 
 | Command | Action |
 |---|---|
-| `/sqlove` | Toggle the window |
+| `/sqlove` or `/sl` | Toggle the window |
 | `/sqlove grab` | Put the macro on your cursor |
 | `/sqlove rebuild` | Recheck progress and rebuild the macro |
 | `/sqlove way` | Load the TomTom waypoints |

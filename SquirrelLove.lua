@@ -15,7 +15,7 @@
 local MACRO_NAME = "SquirrelLove"
 local MACRO_ICON = 3732476         -- inv_squirrelflying
 local MAX_MACRO  = 255
-local VERSION    = "1.0.11"
+local VERSION    = "1.0.12"
 
 local PAW_ICON = "|TInterface\\Icons\\INV_Pet_BattlePetTraining:12:12|t"
 
@@ -1073,6 +1073,7 @@ end
 --=====================================================================
 SLASH_SQUIRRELLOVE1 = "/sqlove"
 SLASH_SQUIRRELLOVE2 = "/squirrellove"
+SLASH_SQUIRRELLOVE3 = "/sl"
 SlashCmdList["SQUIRRELLOVE"] = function(arg)
   arg = (arg or ""):lower():gsub("%s+", "")
 
@@ -1164,4 +1165,4 @@ end
 
 -- Load-time confirmation: if you DON'T see this line after /reload,
 -- the addon's code is not running (out-of-date gate or bad install).
-Print("v" .. VERSION .. " loaded. Type /sqlove")
+Print("v" .. VERSION .. " loaded. Type /sqlove or /sl")
