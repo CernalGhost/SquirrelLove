@@ -2,12 +2,12 @@
 ## Title: SquirrelLove
 ## Notes: Self-advancing macro that targets critters and /love's them for the "To All the Squirrels..." and "To All the Slimes..." achievements, plus TomTom waypoints.
 ## Author: CernalGhost
-## Version: 1.0.13
+## Version: 1.0.14
 ## SavedVariables: SquirrelLoveDB
 ## OptionalDeps: TomTom
 ## IconTexture: 3732476
 ## Category-enUS: Achievements
-## X-Curse-Project-ID: 0
+## X-Curse-Project-ID: 1596566
 ## X-Wago-ID:
 ## X-Website: https://github.com/CernalGhost/SquirrelLove
 

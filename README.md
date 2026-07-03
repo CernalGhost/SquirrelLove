@@ -7,7 +7,7 @@
 SquirrelLove tracks which critters you still need, builds a smart macro that targets and `/love`s them, and drops TomTom waypoints for every location. Press one key near a pack of critters — the macro `/love`s what you need, skips what you've already done, and automatically advances to the next batch.
 
 **Author:** CernalGhost  
-**Version:** 1.0.13  
+**Version:** 1.0.14  
 **Slash command:** `/sqlove` or `/sl`  
 **Download:** [CurseForge (preview — moderation)](https://www.curseforge.com/wow/addons/squirrel-love/preview) · [GitHub](https://github.com/CernalGhost/SquirrelLove)
 

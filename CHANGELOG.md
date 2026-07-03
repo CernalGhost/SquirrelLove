@@ -1,5 +1,9 @@
 # SquirrelLove - Changelog
 
+## 1.0.14
+
+- Set `X-Curse-Project-ID` so GitHub Actions can upload releases to CurseForge.
+
 ## 1.0.13
 
 - Panel and docs now say `/love` instead of "hug" (the emote used by the macro).
