@@ -5,6 +5,7 @@
 - Added `/sl` as a slash-command alias for `/sqlove`.
 - Bumped `## Interface:` for retail 12.0.7 (`120007`) and PTR 12.1.0
   (`120100`).
+- Updated README with logo, CurseForge link, and Wowhead achievement links.
 
 ## 1.0.11
 

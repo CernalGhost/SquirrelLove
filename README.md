@@ -1,30 +1,25 @@
+[![SquirrelLove logo](squirrellove-logo.png)](https://www.curseforge.com/wow/addons/squirrel-love/preview)
+
 # SquirrelLove
 
-A World of Warcraft (Retail) addon that helps you finish the **"To All the
-Squirrels..."** and **"To All the Slimes..."** critter-hugging achievement series and **Pest Control**. It keeps a smart macro
-up to date so you can target and `/love` the critters you still need, and it
-can drop TomTom waypoints for the critter hunt.
+**Finish the entire "To All the Squirrels…" critter achievement line and Pest Control without spreadsheets, guesswork, or tabbing out to Wowhead.**
+
+SquirrelLove tracks which critters you still need, builds a smart macro that targets and `/love`s them, and drops TomTom waypoints for every location. Press one key near a pack of critters — the macro hugs what you need, skips what you've already done, and automatically advances to the next batch.
 
 **Author:** CernalGhost  
-**Version:** 1.0.11
+**Version:** 1.0.12  
+**Slash command:** `/sqlove` or `/sl`  
+**Download:** [CurseForge (preview — moderation)](https://www.curseforge.com/wow/addons/squirrel-love/preview) · [GitHub](https://github.com/CernalGhost/SquirrelLove)
 
 ---
 
-## What it does
+## Features
 
-WoW's secure-code rules forbid an addon from automatically targeting and
-emoting in a loop (that would be a botting API), so you still press a key.
-What SquirrelLove does is keep that key useful:
-
-- It reads each achievement's criteria **live from the game**, so completed
-  achievements and already-loved critters are skipped automatically.
-- It builds a macro named **`SquirrelLove`** containing `/tar` lines for the
-  critters you still need. Because a macro is capped at 255 characters, the
-  critter list is split into "pages." Each press hugs nearby critters on the
-  current page, then the macro flips itself to the next page.
-- When everything is done, the macro becomes a harmless no-op.
-- A movable window shows progress per achievement, and a button loads all the
-  critter-hunt waypoints into TomTom.
+- **Live progress tracking** — reads achievement criteria from the game, so completed achievements and already-loved critters are skipped automatically.
+- **Self-advancing macro** — creates a macro named `SquirrelLove` with `/tar` lines for critters you still need. Macros cap at 255 characters, so the list is split into pages; each press hugs nearby critters, then flips to the next page. When everything's done, the macro becomes a harmless no-op.
+- **Progress window** — lists all achievements with completion status; click any row to open it in the Achievement panel.
+- **TomTom waypoints** — one button drops 100+ critter-hunt waypoints into TomTom, plus Pest Control kill waypoints.
+- **Minimap button** — left-click toggles the window, right-click hides the button.
 
 ## Achievements covered
 
@@ -41,45 +36,54 @@ What SquirrelLove does is keep that key useful:
 | [To All the Squirrels Hidden Til Now](https://www.wowhead.com/achievement=16729) | Dragon Isles |
 | [To All the Squirrels Burrowed Beneath](https://www.wowhead.com/achievement=18361) | Zaralek Cavern |
 | [To All the Slimes I Love](https://www.wowhead.com/achievement=40475) | The Ringing Deeps |
-| [Pest Control](https://www.wowhead.com/achievement=2556) *(kill pests; TomTom waypoints only)* | — |
+| [Pest Control](https://www.wowhead.com/achievement=2556) | Various (kill pests) |
 
-Every critter name is read live from each achievement's in-game criteria, so
-the addon always reflects your real progress and needs no hand-maintained
-critter lists.
+Every critter name is read live from in-game criteria, so the addon always reflects your real progress — even after Blizzard adds new critters.
 
-## Install
+## Requirements
 
-1. Unzip so the folder lands at
-   `World of Warcraft\_retail_\Interface\AddOns\SquirrelLove\`
-   with `SquirrelLove.toc` and `SquirrelLove.lua` directly inside it.
-2. Restart WoW or `/reload`.
-3. You should see `[SquirrelLove] v1.0.11 loaded` in chat. If not, see
-   Troubleshooting below.
+- Retail World of Warcraft.
+- **TomTom** (optional) — required only for the waypoint buttons.
 
-## Usage
+## Installation
 
-- Type `/sqlove` to open the window, or click the minimap button.
-- The minimap button: left-click toggles the window, right-click hides
-  the button (`/sqlove minimap` brings it back).
-- Click **Grab Macro**, then drop the macro onto an action bar.
-- Stand among critters and spam the macro key. Each press hugs whatever
-  needed critters are nearby and advances to the next page.
-- Click **Add TomTom Waypoints** to load all critter locations into TomTom
-  (requires the TomTom addon). Clear them later with `/way reset all`.
-- Click any achievement name in the window to open it in the Achievement panel.
+1. Extract **SquirrelLove** into `World of Warcraft\_retail_\Interface\AddOns\SquirrelLove\` with `SquirrelLove.toc` and `SquirrelLove.lua` directly inside it.
+2. `/reload`. You'll see `[SquirrelLove] loaded` in chat.
 
-### Slash commands
+Enable **Load out of date AddOns** if the Interface number lags a patch.
+
+## Commands
 
 | Command | Action |
 |---|---|
 | `/sqlove` or `/sl` | Toggle the window |
 | `/sqlove grab` | Put the macro on your cursor |
 | `/sqlove rebuild` | Recheck progress and rebuild the macro |
-| `/sqlove way` | Load the TomTom waypoints |
-| `/sqlove minimap` | Show or hide the minimap button |
-| `/sqlove status` | Print how many critters remain |
+| `/sqlove way` | Load the TomTom critter waypoints |
 | `/sqlove killway` | Load Pest Control kill waypoints (TomTom) |
+| `/sqlove minimap` | Show / hide the minimap button |
+| `/sqlove status` | Print how many critters remain |
 | `/sqlove debug` | Print internal state (for support) |
+
+## Usage
+
+1. Open the window with `/sqlove` or the minimap button.
+2. Click **Grab Macro** and drop it on an action bar.
+3. Stand near critters and press the key — each press hugs what you still need and advances to the next page.
+4. Use **Add TomTom Waypoints** to load critter locations (clear later with `/way reset all`).
+
+## Troubleshooting
+
+- **No `[SquirrelLove] loaded` line after `/reload`** — tick **Load out of date AddOns** on the AddOns screen. Also confirm the folder isn't double-nested (`AddOns\SquirrelLove\SquirrelLove\...`).
+- **See Lua errors** — run `/console scriptErrors 1` then `/reload`.
+- **`/sqlove debug`** prints the macro index, page count, and window state.
+
+## Customizing
+
+Open `SquirrelLove.lua` in a text editor:
+
+- **Critter names** are auto-detected from each achievement's criteria. If a critter ever mistargets, add an entry to the `NAME_FIXES` table near the top.
+- **Waypoints** live in the `WAYPOINTS` table. Each string is the text that follows `/way`.
 
 ## Contributing
 
@@ -88,27 +92,6 @@ Bug reports, feature ideas, and pull requests are welcome. See [CONTRIBUTING.md]
 ## License
 
 MIT — see [LICENSE](LICENSE).
-
-## Customizing
-
-Open `SquirrelLove.lua` in a text editor:
-
-- **Critter names** are auto-detected from each achievement's criteria, so
-  there is nothing to maintain. If a critter ever mistargets (a criterion
-  whose generic name differs from the targetable critter), add an entry to
-  the `NAME_FIXES` table near the top: it maps a criterion name to the
-  correct `/tar` text, per achievement.
-- **Waypoints** live in the `WAYPOINTS` table. Each string is the text that
-  follows `/way`.
-
-## Troubleshooting
-
-- **No `[SquirrelLove] loaded` line after `/reload`** — the addon's code is
-  not running. Almost always it's flagged "out of date": on the AddOns screen
-  tick **"Load out of date AddOns."** Also confirm the folder isn't
-  double-nested (`AddOns\SquirrelLove\SquirrelLove\...`).
-- **See Lua errors** — run `/console scriptErrors 1` then `/reload`.
-- **`/sqlove debug`** prints the macro index, page count and window state.
 
 ---
 
