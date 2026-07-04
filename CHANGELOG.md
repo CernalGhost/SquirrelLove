@@ -1,12 +1,17 @@
 # SquirrelLove - Changelog
 
+## 1.0.16
+
+- TomTom pins never include completed criteria (per-critter), not just completed
+  achievements. Applies to row pins, Add Remaining Pins, kill pins, and `/sqlove way`.
+
 ## 1.0.15
 
 - Fixed TomTom integration: use TomTom's Lua API (map ID + coordinates) instead of
   only the `/way` slash handler, which some TomTom builds do not expose.
 - Per-achievement map-pin buttons add waypoints for that region only.
 - **Add Remaining Pins** only loads incomplete love achievements (fewer pins).
-- Right-click a map pin (or `/sqlove wayall`) adds every love waypoint.
+- Right-click a map pin (or `/sqlove wayall`) adds every incomplete love pin.
 
 ## 1.0.14
 

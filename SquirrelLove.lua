@@ -15,7 +15,7 @@
 local MACRO_NAME = "SquirrelLove"
 local MACRO_ICON = 3732476         -- inv_squirrelflying
 local MAX_MACRO  = 255
-local VERSION    = "1.0.15"
+local VERSION    = "1.0.16"
 
 local PAW_ICON = "|TInterface\\Icons\\INV_Pet_BattlePetTraining:12:12|t"
 
@@ -467,11 +467,22 @@ local function ComputeNeeded()
       end
     end
 
+    local incomplete = {}
+    if not completed then
+      for i = 1, num do
+        local critName, _, critDone = GetAchievementCriteriaInfo(ach.id, i)
+        if critName and critName ~= "" and not critDone then
+          incomplete[#incomplete + 1] = critName
+        end
+      end
+    end
+
     achStatus[ach.id] = {
-      completed = completed and true or false,
-      remaining = left,
-      total     = num,
-      name      = name,
+      completed  = completed and true or false,
+      remaining  = left,
+      total      = num,
+      name       = name,
+      incomplete = incomplete,
     }
   end
 
@@ -482,20 +493,25 @@ local function ComputePestStatus()
   local _, name, _, completed = GetAchievementInfo(PEST_CONTROL_ID)
   local num  = GetAchievementNumCriteria(PEST_CONTROL_ID) or 0
   local left = 0
+  local incomplete = {}
 
   for i = 1, num do
-    local _, _, critDone = GetAchievementCriteriaInfo(PEST_CONTROL_ID, i)
+    local critName, _, critDone = GetAchievementCriteriaInfo(PEST_CONTROL_ID, i)
     if not completed and not critDone then
       left = left + 1
+      if critName and critName ~= "" then
+        incomplete[#incomplete + 1] = critName
+      end
     end
   end
 
   pestRemaining = left
   pestStatus = {
-    completed = completed and true or false,
-    remaining = left,
-    total     = num,
-    name      = name or "Pest Control",
+    completed  = completed and true or false,
+    remaining  = left,
+    total      = num,
+    name       = name or "Pest Control",
+    incomplete = incomplete,
   }
 end
 
@@ -802,26 +818,74 @@ local function AddWaypointList(list, kind)
   Print(("added %d %s waypoints. Use |cffffffff/way reset all|r to clear."):format(count, kind))
 end
 
-local function AchievementComplete(achID)
-  local _, _, _, completed = GetAchievementInfo(achID)
-  return completed and true or false
+-- Match a waypoint label to incomplete criteria (criteria name, /tar fix, or
+-- partial match). Labels may include notes like "(in cave)".
+local function IncompleteNameKeys(achID, incompleteList)
+  local keys = {}
+  for _, critName in ipairs(incompleteList or {}) do
+    keys[critName:lower()] = true
+    local target = CritterTarget(achID, critName)
+    if target and target ~= "" then
+      keys[target:lower()] = true
+    end
+  end
+  return keys
 end
 
-local function WaypointsForAchievement(achID)
-  return WAYPOINTS_BY_ACH[achID]
+local function WaypointLabelKey(wp)
+  local _, _, _, desc = ParseWaypointLine(wp)
+  if not desc or desc == "" then return nil end
+  desc = desc:gsub("^KILL:%s*", "")
+  desc = desc:gsub("%s*%b()", "")
+  desc = desc:match("^%s*(.-)%s*$") or desc
+  return desc:lower()
 end
 
-local function CollectLoveWaypoints(opts)
-  opts = opts or {}
-  local onlyIncomplete = opts.onlyIncomplete
-  local onlyAchID = opts.achID
+local function WaypointMatchesIncomplete(wp, achID, incompleteList)
+  local keys = IncompleteNameKeys(achID, incompleteList)
+  if not next(keys) then return false end
+  local label = WaypointLabelKey(wp)
+  if not label or label == "" then return false end
+  if keys[label] then return true end
+  for key in pairs(keys) do
+    if #key >= 3 and (label:find(key, 1, true) or key:find(label, 1, true)) then
+      return true
+    end
+  end
+  return false
+end
+
+local function FilterWaypointsForAchievement(achID)
+  local wps = WAYPOINTS_BY_ACH[achID]
+  if not wps then return {} end
+
+  -- Refresh status if needed (window may open before first Rebuild).
+  local st = achStatus[achID]
+  if not st then
+    ComputeNeeded()
+    st = achStatus[achID]
+  end
+  if not st or st.completed or not st.incomplete or #st.incomplete == 0 then
+    return {}
+  end
+
+  local out = {}
+  for _, wp in ipairs(wps) do
+    if WaypointMatchesIncomplete(wp, achID, st.incomplete) then
+      out[#out + 1] = wp
+    end
+  end
+  return out
+end
+
+local function CollectLoveWaypoints(onlyAchID)
   local list, labels = {}, {}
+  if not next(achStatus) then ComputeNeeded() end
   for _, ach in ipairs(ACHIEVEMENTS) do
-    if (not onlyAchID or ach.id == onlyAchID)
-        and (not onlyIncomplete or not AchievementComplete(ach.id)) then
-      local wps = WAYPOINTS_BY_ACH[ach.id]
-      if wps then
-        for _, wp in ipairs(wps) do
+    if not onlyAchID or ach.id == onlyAchID then
+      local filtered = FilterWaypointsForAchievement(ach.id)
+      if #filtered > 0 then
+        for _, wp in ipairs(filtered) do
           list[#list + 1] = wp
         end
         labels[#labels + 1] = ach.region or tostring(ach.id)
@@ -832,31 +896,65 @@ local function CollectLoveWaypoints(opts)
 end
 
 local function AddWaypointsForAchievement(achID)
-  local list = WaypointsForAchievement(achID)
-  if not list then
-    Print("no waypoints stored for that achievement.")
+  local list = FilterWaypointsForAchievement(achID)
+  local title = select(2, GetAchievementInfo(achID)) or ("achievement " .. achID)
+  if #list == 0 then
+    local st = achStatus[achID]
+    if st and st.completed then
+      Print(title .. " is already complete — no pins added.")
+    else
+      Print("no incomplete critters left to pin for " .. title .. ".")
+    end
     return
   end
-  local title = select(2, GetAchievementInfo(achID)) or ("achievement " .. achID)
-  AddWaypointList(list, title)
+  AddWaypointList(list, title .. " (incomplete only)")
 end
 
 local function AddWaypoints()
-  local list, labels = CollectLoveWaypoints({ onlyIncomplete = true })
+  local list, labels = CollectLoveWaypoints()
   if #list == 0 then
-    Print("all love achievements complete — nothing to add. Right-click a row's pin for that region anyway.")
+    Print("nothing left to pin — all love criteria are complete.")
     return
   end
-  AddWaypointList(list, "remaining (" .. table.concat(labels, ", ") .. ")")
+  AddWaypointList(list, "incomplete (" .. table.concat(labels, ", ") .. ")")
 end
 
+-- Same as AddWaypoints (kept for slash/UI that said "all").
 local function AddAllLoveWaypoints()
-  local list = CollectLoveWaypoints()
-  AddWaypointList(list, "all critter /love")
+  AddWaypoints()
 end
 
 local function AddKillWaypoints()
-  AddWaypointList(KILL_WAYPOINTS, "KILL (Pest Control)")
+  if not pestStatus then ComputePestStatus() end
+  if pestStatus.completed or not pestStatus.incomplete or #pestStatus.incomplete == 0 then
+    Print("Pest Control is complete — no kill pins added.")
+    return
+  end
+  local keys = {}
+  for _, name in ipairs(pestStatus.incomplete) do
+    keys[name:lower()] = true
+  end
+  local list = {}
+  for _, wp in ipairs(KILL_WAYPOINTS) do
+    local label = WaypointLabelKey(wp)
+    if label then
+      local needed = keys[label]
+      if not needed then
+        for key in pairs(keys) do
+          if #key >= 3 and (label:find(key, 1, true) or key:find(label, 1, true)) then
+            needed = true
+            break
+          end
+        end
+      end
+      if needed then list[#list + 1] = wp end
+    end
+  end
+  if #list == 0 then
+    Print("no incomplete Pest Control pins to add.")
+    return
+  end
+  AddWaypointList(list, "KILL incomplete (Pest Control)")
 end
 
 --=====================================================================
@@ -940,11 +1038,15 @@ local function BuildUI()
     end)
     pinBtn:RegisterForClicks("LeftButtonUp", "RightButtonUp")
     pinBtn:SetScript("OnEnter", function(self)
-      local n = #(WAYPOINTS_BY_ACH[self.achID] or {})
+      local n = #FilterWaypointsForAchievement(self.achID)
       GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
       GameTooltip:SetText("TomTom waypoints", 1, 1, 1)
-      GameTooltip:AddLine(("Left-click: add %d pins for this achievement."):format(n), 0.8, 0.8, 0.8, true)
-      GameTooltip:AddLine("Right-click: add ALL love waypoints.", 0.8, 0.8, 0.8, true)
+      if n == 0 then
+        GameTooltip:AddLine("Nothing left — all criteria complete.", 0.6, 0.6, 0.6, true)
+      else
+        GameTooltip:AddLine(("Left-click: add %d pin(s) for incomplete critters only."):format(n), 0.8, 0.8, 0.8, true)
+      end
+      GameTooltip:AddLine("Right-click: all incomplete love pins (every region).", 0.8, 0.8, 0.8, true)
       GameTooltip:Show()
     end)
     pinBtn:SetScript("OnLeave", function() GameTooltip:Hide() end)
@@ -1083,8 +1185,8 @@ local function BuildUI()
   way:SetPoint("BOTTOMRIGHT", -16, 68)
   way:SetScript("OnEnter", function(self)
     GameTooltip:SetOwner(self, "ANCHOR_TOP")
-    GameTooltip:SetText("TomTom — incomplete achievements only", 1, 1, 1)
-    GameTooltip:AddLine("Use the map icon on a row for one region. Right-click a map icon for every love pin.", 0.8, 0.8, 0.8, true)
+    GameTooltip:SetText("TomTom — incomplete critters only", 1, 1, 1)
+    GameTooltip:AddLine("Skips completed criteria. Map icon on a row = that achievement only.", 0.8, 0.8, 0.8, true)
     GameTooltip:Show()
   end)
   way:SetScript("OnLeave", function() GameTooltip:Hide() end)
