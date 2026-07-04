@@ -1,12 +1,20 @@
 # SquirrelLove - Changelog
 
+## 1.0.15
+
+- Fixed TomTom integration: use TomTom's Lua API (map ID + coordinates) instead of
+  only the `/way` slash handler, which some TomTom builds do not expose.
+- Per-achievement map-pin buttons add waypoints for that region only.
+- **Add Remaining Pins** only loads incomplete love achievements (fewer pins).
+- Right-click a map pin (or `/sqlove wayall`) adds every love waypoint.
+
 ## 1.0.14
 
 - Set `X-Curse-Project-ID` so GitHub Actions can upload releases to CurseForge.
 
 ## 1.0.13
 
-- Panel and docs now say `/love` instead of "hug" (the emote used by the macro).
+- Panel and docs consistently use `/love` (the emote used by the macro).
 
 ## 1.0.12
 
@@ -46,7 +54,7 @@ First public release.
 
 - Maintains a self-advancing macro (named `SquirrelLove`) that targets and
   `/love`s the critters needed for the "To All the Squirrels..." achievement
-  series. Each press hugs nearby critters, then flips the macro to the next
+  series. Each press `/love`s nearby critters, then flips the macro to the next
   page.
 - Reads every achievement's criteria live from the game, so completed
   critters and achievements are skipped automatically; when everything is

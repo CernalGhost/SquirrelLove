@@ -15,7 +15,7 @@
 local MACRO_NAME = "SquirrelLove"
 local MACRO_ICON = 3732476         -- inv_squirrelflying
 local MAX_MACRO  = 255
-local VERSION    = "1.0.14"
+local VERSION    = "1.0.15"
 
 local PAW_ICON = "|TInterface\\Icons\\INV_Pet_BattlePetTraining:12:12|t"
 
@@ -93,8 +93,9 @@ local PET_ALIASES = {
 --  TomTom's /way command, so zone names, map IDs (#123) and either
 --  comma- or space-separated coordinates all work.
 --=====================================================================
-local WAYPOINTS = {
+local WAYPOINTS_BY_ACH = {
   -- To All the Squirrels I've Loved Before (1206) — Wowhead comment TomTom block
+  [1206] = {
   "Elwynn Forest 32.31 53.81 Fawn",
   "Elwynn Forest 47.75 59.41 Deer",
   "Elwynn Forest 86.68 72.17 Cow",
@@ -116,7 +117,9 @@ local WAYPOINTS = {
   "Zangarmarsh 82 85 Small Frog",
   "Zangarmarsh 70 49 Shore Crab",
   "Westfall 50 45 Prairie Dog",
+  },
   -- To All the Squirrels Who Shared My Life (2557)
+  [2557] = {
   "Borean Tundra 51 73 Borean Marmot",
   "Borean Tundra 62 68 Tundra Penguin",
   "Borean Tundra 78 28 Steam Frog",
@@ -131,7 +134,9 @@ local WAYPOINTS = {
   "Icecrown 67 25 Glacier Penguin",
   "Swamp of Sorrows 11 35 Huge Toad",
   "Searing Gorge 42 37 Lava Crab",
+  },
   -- To All the Squirrels Who Cared for Me (5548)
+  [5548] = {
   "Stonetalon Mountains 61 80 Mountain Skunk",
   "Mount Hyjal 60 23 Chipmunk",
   "Mount Hyjal 58 22 Vole",
@@ -146,7 +151,9 @@ local WAYPOINTS = {
   "Twilight Highlands 47 70 Marmot",
   "Twilight Highlands 46 48 Rattlesnake",
   "Twilight Highlands 51 35 Turkey",
+  },
   -- To All the Squirrels I Once Caressed (6350)
+  [6350] = {
   "The Jade Forest 51 55 Leopard Tree Frog",
   "The Jade Forest 36 58 Shrine Fly",
   "The Jade Forest 64 82 Coral Adder",
@@ -164,7 +171,9 @@ local WAYPOINTS = {
   "Dread Wastes 54 82 Emperor Crab",
   "Townlong Steppes 62 67 Mongoose",
   "Townlong Steppes 76 82 Yakrat",
+  },
   -- To All the Squirrels Through Time and Space (14728)
+  [14728] = {
   "Frostfire Ridge 66.69 76.35 Frostfur Rat",
   "Frostfire Ridge 66.69 76.35 Icespine Hatchling",
   "Gorgrond 42.40 38.99 Parched Lizard",
@@ -180,7 +189,9 @@ local WAYPOINTS = {
   "Talador 57.05 74.31 Flat-Tooth Calf",
   "Talador 81.70 27.11 Shadow Sporebat",
   "Tanaan Jungle 48.48 51.22 Bloodbeak",
+  },
   -- To All the Squirrels I Love Despite Their Scars (14729)
+  [14729] = {
   "Azsuna 31 35 Albatross Chick",
   "Azsuna 59 39 Coastal Sandpiper",
   "Azsuna 34 43 Felspider",
@@ -194,7 +205,9 @@ local WAYPOINTS = {
   "Val'sharah 64 74 Auburn Ringtail",
   "Val'sharah 38 62 Blighthawk",
   "Val'sharah 55 73 Gleamhoof Fawn",
+  },
   -- To All the Squirrels I Set Sail to See (14730)
+  [14730] = {
   "Stormsong Valley 45.87 62.73 Honey Bee",
   "Stormsong Valley 25.83 70.26 Olivewing",
   "Tiragarde Sound 77.72 47.90 Tiragarde Gull",
@@ -207,7 +220,9 @@ local WAYPOINTS = {
   "Zuldazar 67.11 41.89 Crested Gekkota",
   "Zuldazar 62.72 16.52 Jungle Gulper",
   "Dazar'alor:Zuldazar 43.53 36.77 Temple Beetle",
+  },
   -- To All the Squirrels I've Loved and Lost (14731)
+  [14731] = {
   "Bastion 48.0 77.8 Soulwing Flitter",
   "Bastion 37.7 27.5 Darkened Wyrmling",
   "Bastion 54.9 13.5 Dreadfur Kit",
@@ -220,7 +235,9 @@ local WAYPOINTS = {
   "Revendreth 39.0 49.3 Emaciated Bat (flying)",
   "Revendreth 70.9 76.5 Shardling",
   "Revendreth 56 58 Murky Creeper",
+  },
   -- To All the Squirrels Hidden Til Now (16729)
+  [16729] = {
   "The Waking Shores 76.17 44.18 Kelp Nibbler",
   "The Waking Shores 65.15 28.38 Phoenix Hatchling",
   "The Waking Shores 58.31 72.05 Docile Kit",
@@ -233,7 +250,9 @@ local WAYPOINTS = {
   "Thaldraszus 56.09 68.71 Diminuitive Boghopper",
   "Thaldraszus 51.24 56.82 Reservoir Filly",
   "Thaldraszus 51.35 72.61 Rocdrop Scarab",
+  },
   -- To All the Squirrels Burrowed Beneath (18361)
+  [18361] = {
   "Zaralek Cavern 58.45 74.22 Hissing Dustmoth",
   "Zaralek Cavern 37.96 71.07 Rock Martin",
   "Zaralek Cavern 52.04 75.21 Hatchling Dawdler",
@@ -244,7 +263,9 @@ local WAYPOINTS = {
   "Zaralek Cavern 36.51 53.05 Magma Bubble",
   "Zaralek Cavern 50.03 64.69 Scuttering Beetle",
   "Zaralek Cavern 44.91 77.71 Aimless Snail",
+  },
   -- To All the Slimes I Love (40475) — The Ringing Deeps
+  [40475] = {
   "The Ringing Deeps 53.95 67.55 Spring Mole",
   "The Ringing Deeps 47.25 15.34 Snake",
   "The Ringing Deeps 60.50 32.61 Lightdarter",
@@ -263,6 +284,7 @@ local WAYPOINTS = {
   "The Ringing Deeps 60.87 41.32 Oozeling (inside a cave)",
   "The Ringing Deeps 55.24 45.73 Pebble Scarab",
   "The Ringing Deeps 38.27 14.52 Rock Snail",
+  },
 }
 
 -- Pest Control (2556): one or more TomTom pins per pest type.
@@ -590,9 +612,9 @@ end
 --=====================================================================
 --  TOMTOM WAYPOINTS
 --=====================================================================
--- TomTom uses only the description (text after x y) as the waypoint title;
--- the zone is used for map placement but not shown. Rebuild each line so
--- the title includes the zone, and fix wiki-style "24.83" -> 24 83 coords.
+-- Prefer TomTom's Lua API (reliable). Fall back to /way or /tway handlers.
+-- TomTom uses only the description as the pin title, so titles include zone.
+
 local function ParseWaypointLine(wp)
   local s = wp:gsub(",", " "):gsub("%s+", " ")
   local tokens = {}
@@ -601,7 +623,6 @@ local function ParseWaypointLine(wp)
   end
   if #tokens < 2 then return nil end
 
-  -- Zone is every token before the first number (the X coord); Y follows.
   local xIdx
   for idx = 1, #tokens do
     if tonumber(tokens[idx]) then
@@ -617,9 +638,7 @@ local function ParseWaypointLine(wp)
 
   local zone = table.concat(tokens, " ", 1, xIdx - 1)
   local desc = table.concat(tokens, " ", xIdx + 2)
-  if desc == "" then
-    desc = zone
-  end
+  if desc == "" then desc = zone end
   return zone, x, y, desc
 end
 
@@ -630,59 +649,210 @@ local function FormatWaypointLine(zone, x, y, desc)
   return ("%s %s %s %s"):format(zone, x, y, desc)
 end
 
--- Find the function registered for a slash command (e.g. "/way"),
--- whatever internal key the owning addon used.
+local function TomTomLoaded()
+  if TomTom ~= nil then return true end
+  if C_AddOns and C_AddOns.IsAddOnLoaded then
+    return C_AddOns.IsAddOnLoaded("TomTom") and true or false
+  end
+  return false
+end
+
 local function GetSlashHandler(slash)
   slash = slash:lower()
   for key, func in pairs(SlashCmdList) do
-    local i = 1
-    while true do
-      local cmd = _G["SLASH_" .. key .. i]
-      if not cmd then break end
-      if type(cmd) == "string" and cmd:lower() == slash then
-        return func
+    if type(func) == "function" then
+      local i = 1
+      while true do
+        local cmd = _G["SLASH_" .. key .. i]
+        if not cmd then break end
+        if type(cmd) == "string" and cmd:lower() == slash then
+          return func
+        end
+        i = i + 1
       end
-      i = i + 1
     end
   end
   return nil
 end
 
+-- Zone name -> mapID cache (handles "Nagrand:Draenor" style names).
+local _mapNameCache = {}
+local _mapCacheBuilt = false
+
+local function BuildMapNameCache()
+  if _mapCacheBuilt or not C_Map or not C_Map.GetMapInfo then return end
+  _mapCacheBuilt = true
+  local function walk(mapID)
+    local info = C_Map.GetMapInfo(mapID)
+    if info and info.name then
+      local key = info.name:lower()
+      local list = _mapNameCache[key]
+      if not list then
+        list = {}
+        _mapNameCache[key] = list
+      end
+      list[#list + 1] = mapID
+    end
+    local children = C_Map.GetMapChildrenInfo(mapID, nil, true)
+    if children then
+      for _, child in ipairs(children) do
+        walk(child.mapID)
+      end
+    end
+  end
+  -- Cosmic map root (covers Azeroth + Outland + etc. in retail).
+  walk(946)
+end
+
+local function ResolveMapID(zone)
+  BuildMapNameCache()
+  local name, context = zone:match("^(.-):(.+)$")
+  name = name or zone
+  local candidates = _mapNameCache[name:lower()]
+  if not candidates or #candidates == 0 then return nil end
+  if #candidates == 1 or not context then return candidates[1] end
+  local ctx = context:lower()
+  for _, mapID in ipairs(candidates) do
+    local id = mapID
+    while id do
+      local info = C_Map.GetMapInfo(id)
+      if not info then break end
+      if info.name and info.name:lower():find(ctx, 1, true) then
+        return mapID
+      end
+      id = info.parentMapID
+    end
+  end
+  return candidates[1]
+end
+
+local function AddOneWaypoint(zone, x, y, desc)
+  local title = desc
+  if title:sub(1, #zone) ~= zone then
+    title = zone .. ": " .. desc
+  end
+  local xf, yf = tonumber(x), tonumber(y)
+  if not xf or not yf then return false end
+  -- TomTom API expects 0-1; our data is 0-100.
+  if xf > 1 or yf > 1 then
+    xf, yf = xf / 100, yf / 100
+  end
+
+  -- 1) TomTom Lua API (preferred — does not need /way registration).
+  if TomTom and type(TomTom.AddWaypoint) == "function" then
+    local mapID = ResolveMapID(zone)
+    if mapID then
+      local ok = pcall(function()
+        TomTom:AddWaypoint(mapID, xf, yf, {
+          title = title,
+          from = "SquirrelLove",
+          persistent = true,
+          minimap = true,
+          world = true,
+          crazy = true,
+        })
+      end)
+      if ok then return true end
+    end
+  end
+
+  -- 2) Slash handlers (/way, /tway) — TomTom or other waypoint addons.
+  local line = FormatWaypointLine(zone, x, y, desc)
+  for _, slash in ipairs({ "/way", "/tway" }) do
+    local handler = GetSlashHandler(slash)
+    if handler then
+      local ok = pcall(handler, line)
+      if ok then return true end
+    end
+  end
+  return false
+end
+
 local function AddWaypointList(list, kind)
-  local hasTomTom = TomTom ~= nil
-    or (C_AddOns and C_AddOns.IsAddOnLoaded and C_AddOns.IsAddOnLoaded("TomTom"))
-  if not hasTomTom then
-    Print("|cffff5555TomTom is not loaded.|r Install/enable the TomTom addon, then try again.")
+  if not list or #list == 0 then
+    Print("no waypoints to add.")
+    return
+  end
+  if not TomTomLoaded() then
+    Print("|cffff5555TomTom is not loaded.|r Install/enable TomTom, then /reload.")
     return
   end
 
-  local handler = GetSlashHandler("/way")
-  if not handler then
-    Print("|cffff5555Could not reach TomTom's /way command.|r")
-    return
-  end
-
-  local count = 0
-  local skipped = 0
+  local count, skipped, failed = 0, 0, 0
   for _, wp in ipairs(list) do
     local zone, x, y, desc = ParseWaypointLine(wp)
     if not zone then
       skipped = skipped + 1
-      Print("|cffff5555skipped invalid waypoint (need zone X Y label):|r " .. wp)
-    else
-      pcall(handler, FormatWaypointLine(zone, x, y, desc))
+    elseif AddOneWaypoint(zone, x, y, desc) then
       count = count + 1
+    else
+      failed = failed + 1
     end
   end
   if skipped > 0 then
     Print(("skipped %d invalid waypoint(s)."):format(skipped))
   end
-  Print(("added %d %s waypoints to TomTom. Use |cffffffff/way reset all|r to clear them."):format(
-    count, kind))
+  if failed > 0 and count == 0 then
+    Print("|cffff5555Could not add waypoints.|r TomTom may be outdated or blocked. Try /reload with only TomTom + SquirrelLove.")
+    return
+  end
+  if failed > 0 then
+    Print(("failed %d waypoint(s)."):format(failed))
+  end
+  Print(("added %d %s waypoints. Use |cffffffff/way reset all|r to clear."):format(count, kind))
+end
+
+local function AchievementComplete(achID)
+  local _, _, _, completed = GetAchievementInfo(achID)
+  return completed and true or false
+end
+
+local function WaypointsForAchievement(achID)
+  return WAYPOINTS_BY_ACH[achID]
+end
+
+local function CollectLoveWaypoints(opts)
+  opts = opts or {}
+  local onlyIncomplete = opts.onlyIncomplete
+  local onlyAchID = opts.achID
+  local list, labels = {}, {}
+  for _, ach in ipairs(ACHIEVEMENTS) do
+    if (not onlyAchID or ach.id == onlyAchID)
+        and (not onlyIncomplete or not AchievementComplete(ach.id)) then
+      local wps = WAYPOINTS_BY_ACH[ach.id]
+      if wps then
+        for _, wp in ipairs(wps) do
+          list[#list + 1] = wp
+        end
+        labels[#labels + 1] = ach.region or tostring(ach.id)
+      end
+    end
+  end
+  return list, labels
+end
+
+local function AddWaypointsForAchievement(achID)
+  local list = WaypointsForAchievement(achID)
+  if not list then
+    Print("no waypoints stored for that achievement.")
+    return
+  end
+  local title = select(2, GetAchievementInfo(achID)) or ("achievement " .. achID)
+  AddWaypointList(list, title)
 end
 
 local function AddWaypoints()
-  AddWaypointList(WAYPOINTS, "critter /love")
+  local list, labels = CollectLoveWaypoints({ onlyIncomplete = true })
+  if #list == 0 then
+    Print("all love achievements complete — nothing to add. Right-click a row's pin for that region anyway.")
+    return
+  end
+  AddWaypointList(list, "remaining (" .. table.concat(labels, ", ") .. ")")
+end
+
+local function AddAllLoveWaypoints()
+  local list = CollectLoveWaypoints()
+  AddWaypointList(list, "all critter /love")
 end
 
 local function AddKillWaypoints()
@@ -754,6 +924,34 @@ local function BuildUI()
     paw:SetTexture("Interface\\Icons\\INV_Pet_BattlePetTraining")
     paw:Hide()
 
+    -- Per-achievement TomTom pin (avoids dumping every zone at once).
+    local pinBtn = CreateFrame("Button", nil, row)
+    pinBtn:SetSize(14, 14)
+    pinBtn:SetPoint("RIGHT", paw, "LEFT", -2, 0)
+    pinBtn:SetNormalTexture("Interface\\Icons\\INV_Misc_Map_01")
+    pinBtn:SetHighlightTexture("Interface\\Buttons\\ButtonHilight-Square", "ADD")
+    pinBtn.achID = achID
+    pinBtn:SetScript("OnClick", function(self, button)
+      if button == "RightButton" then
+        AddAllLoveWaypoints()
+      else
+        AddWaypointsForAchievement(self.achID)
+      end
+    end)
+    pinBtn:RegisterForClicks("LeftButtonUp", "RightButtonUp")
+    pinBtn:SetScript("OnEnter", function(self)
+      local n = #(WAYPOINTS_BY_ACH[self.achID] or {})
+      GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+      GameTooltip:SetText("TomTom waypoints", 1, 1, 1)
+      GameTooltip:AddLine(("Left-click: add %d pins for this achievement."):format(n), 0.8, 0.8, 0.8, true)
+      GameTooltip:AddLine("Right-click: add ALL love waypoints.", 0.8, 0.8, 0.8, true)
+      GameTooltip:Show()
+    end)
+    pinBtn:SetScript("OnLeave", function() GameTooltip:Hide() end)
+    if not WAYPOINTS_BY_ACH[achID] then
+      pinBtn:Hide()
+    end
+
     local statusFS = row:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
     statusFS:SetSize(50, ROW_H)
     statusFS:SetPoint("LEFT", row, "LEFT", 0, 0)
@@ -768,7 +966,7 @@ local function BuildUI()
 
     local titleFS = row:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
     titleFS:SetPoint("LEFT", regionFS, "RIGHT", 6, 0)
-    titleFS:SetPoint("RIGHT", paw, "LEFT", -4, 0)
+    titleFS:SetPoint("RIGHT", pinBtn, "LEFT", -4, 0)
     titleFS:SetJustifyH("LEFT")
     titleFS:SetWordWrap(false)
 
@@ -776,6 +974,7 @@ local function BuildUI()
     row.region = regionFS
     row.title  = titleFS
     row.paw    = paw
+    row.pin    = pinBtn
     row.achID  = achID
 
     row:SetScript("OnClick", function(self)
@@ -793,6 +992,8 @@ local function BuildUI()
     row:SetScript("OnEnter", function(self)
       GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
       ShowAchRowTooltip(self.achID)
+      GameTooltip:AddLine(" ")
+      GameTooltip:AddLine("Map icon: TomTom pins for this achievement only.", 0.5, 0.7, 0.5, true)
       GameTooltip:Show()
     end)
     row:SetScript("OnLeave", function() GameTooltip:Hide() end)
@@ -831,10 +1032,25 @@ local function BuildUI()
       end
     end
   end)
+  local pestPin = CreateFrame("Button", nil, pestRow)
+  pestPin:SetSize(14, 14)
+  pestPin:SetPoint("RIGHT", pestRow, "RIGHT", 0, 0)
+  pestPin:SetNormalTexture("Interface\\Icons\\INV_Misc_Map_01")
+  pestPin:SetHighlightTexture("Interface\\Buttons\\ButtonHilight-Square", "ADD")
+  pestPin:SetScript("OnClick", AddKillWaypoints)
+  pestPin:SetScript("OnEnter", function(self)
+    GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+    GameTooltip:SetText("TomTom kill waypoints", 1, 1, 1)
+    GameTooltip:AddLine("Add Pest Control pins.", 0.8, 0.8, 0.8, true)
+    GameTooltip:Show()
+  end)
+  pestPin:SetScript("OnLeave", function() GameTooltip:Hide() end)
+  pestFS:SetPoint("RIGHT", pestPin, "LEFT", -4, 0)
+
   pestRow:SetScript("OnEnter", function(self)
     GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
     GameTooltip:SetText("Pest Control", 1, 1, 1)
-    GameTooltip:AddLine("Kill pests for this achievement. Use Add Kill Waypoints.", 0.6, 0.6, 0.6)
+    GameTooltip:AddLine("Kill pests for this achievement. Map icon adds kill waypoints.", 0.6, 0.6, 0.6, true)
     GameTooltip:Show()
   end)
   pestRow:SetScript("OnLeave", function() GameTooltip:Hide() end)
@@ -853,7 +1069,7 @@ local function BuildUI()
   hint:SetJustifyH("LEFT")
   hint:SetText("Put the macro on an action bar and spam it while standing " ..
     "among critters. Each press /love's nearby critters, then flips to the " ..
-    "next page.  Click an achievement to open it.")
+    "next page. Map icon = TomTom pins for that achievement only.")
 
   local function MakeButton(label)
     local b = CreateFrame("Button", nil, f, "UIPanelButtonTemplate")
@@ -862,9 +1078,16 @@ local function BuildUI()
     return b
   end
 
-  local way = MakeButton("Add Love Waypoints")
+  local way = MakeButton("Add Remaining Pins")
   way:SetPoint("BOTTOMLEFT", 16, 68)
   way:SetPoint("BOTTOMRIGHT", -16, 68)
+  way:SetScript("OnEnter", function(self)
+    GameTooltip:SetOwner(self, "ANCHOR_TOP")
+    GameTooltip:SetText("TomTom — incomplete achievements only", 1, 1, 1)
+    GameTooltip:AddLine("Use the map icon on a row for one region. Right-click a map icon for every love pin.", 0.8, 0.8, 0.8, true)
+    GameTooltip:Show()
+  end)
+  way:SetScript("OnLeave", function() GameTooltip:Hide() end)
 
   local killWay = MakeButton("Add Kill Waypoints")
   killWay:SetPoint("BOTTOMLEFT", 16, 44)
@@ -1089,6 +1312,9 @@ SlashCmdList["SQUIRRELLOVE"] = function(arg)
   elseif arg == "rebuild" then
     Rebuild()
     Print("Rebuilt. " .. remaining .. " critters remaining.")
+
+  elseif arg == "wayall" or arg == "waypointsall" then
+    AddAllLoveWaypoints()
 
   elseif arg == "way" or arg == "waypoints" then
     AddWaypoints()
