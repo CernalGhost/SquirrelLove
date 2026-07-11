@@ -1,5 +1,10 @@
 # SquirrelLove - Changelog
 
+## 1.0.17
+
+- Progress window layout scales cleanly at high UI scale: fixed column widths,
+  column headers, and row height derived from the active font (no clipped text).
+
 ## 1.0.16
 
 - TomTom pins never include completed criteria (per-critter), not just completed

@@ -15,7 +15,7 @@
 local MACRO_NAME = "SquirrelLove"
 local MACRO_ICON = 3732476         -- inv_squirrelflying
 local MAX_MACRO  = 255
-local VERSION    = "1.0.16"
+local VERSION    = "1.0.17"
 
 local PAW_ICON = "|TInterface\\Icons\\INV_Pet_BattlePetTraining:12:12|t"
 
@@ -959,15 +959,104 @@ end
 
 --=====================================================================
 --  PROGRESS WINDOW
+--  Layout uses fixed column widths anchored to the frame (not screen
+--  pixels). WoW's UI scale setting scales UIParent children uniformly,
+--  so fonts and frame sizes grow/shrink together. Row height is derived
+--  from the active font so text is not clipped at high UI scale.
 --=====================================================================
+local UI_LAYOUT = {
+  frameW     = 340,
+  frameH     = 440,
+  padX       = 14,
+  colStatusW = 54,
+  colRegionW = 46,
+  colGap     = 6,
+  listTop    = -96,
+}
+
+local function RowMetrics()
+  local h = 16
+  if GameFontHighlightSmall and GameFontHighlightSmall.GetStringHeight then
+    h = math.max(16, math.ceil(GameFontHighlightSmall:GetStringHeight()) + 2)
+  end
+  return h, h + 1
+end
+
+local function ApplyListLayout(frame, rows, pestRow, listTop)
+  local rowH, rowStep = RowMetrics()
+  local rowW = UI_LAYOUT.frameW - UI_LAYOUT.padX * 2
+  for i, row in ipairs(rows) do
+    row:SetSize(rowW, rowH)
+    row:SetPoint("TOPLEFT", frame, "TOPLEFT", UI_LAYOUT.padX, listTop - (i - 1) * rowStep)
+    if row.status then row.status:SetHeight(rowH) end
+    if row.region then row.region:SetHeight(rowH) end
+    if row.title then row.title:SetHeight(rowH) end
+  end
+  if pestRow then
+    pestRow:SetSize(rowW, rowH)
+    pestRow:SetPoint("TOPLEFT", frame, "TOPLEFT", UI_LAYOUT.padX, listTop - #rows * rowStep)
+    if pestRow.status then pestRow.status:SetHeight(rowH) end
+    if pestRow.region then pestRow.region:SetHeight(rowH) end
+    if pestRow.text then pestRow.text:SetHeight(rowH) end
+  end
+  return rowH, rowStep
+end
+
+local function CreateRowColumns(row, opts)
+  local rowH = opts.rowH
+  local pinBtn = opts.pinBtn
+  local paw = opts.paw
+  local showRegion = (opts.showRegion ~= false)
+
+  local statusFS = row:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
+  statusFS:SetSize(UI_LAYOUT.colStatusW, rowH)
+  statusFS:SetPoint("LEFT", row, "LEFT", 0, 0)
+  statusFS:SetJustifyH("RIGHT")
+  statusFS:SetJustifyV("MIDDLE")
+  statusFS:SetWordWrap(false)
+
+  local regionFS
+  local titleLeft = statusFS
+  if showRegion then
+    regionFS = row:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
+    regionFS:SetSize(UI_LAYOUT.colRegionW, rowH)
+    regionFS:SetPoint("LEFT", statusFS, "RIGHT", UI_LAYOUT.colGap, 0)
+    regionFS:SetJustifyH("CENTER")
+    regionFS:SetJustifyV("MIDDLE")
+    regionFS:SetWordWrap(false)
+    titleLeft = regionFS
+  else
+    -- Spacer keeps title text aligned with achievement rows above.
+    local regionSpacer = row:CreateTexture(nil, "ARTWORK")
+    regionSpacer:SetSize(UI_LAYOUT.colRegionW, rowH)
+    regionSpacer:SetPoint("LEFT", statusFS, "RIGHT", UI_LAYOUT.colGap, 0)
+    regionSpacer:SetAlpha(0)
+    regionFS = regionSpacer
+  end
+
+  local titleFS = row:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
+  titleFS:SetPoint("LEFT", titleLeft, "RIGHT", UI_LAYOUT.colGap, 0)
+  if pinBtn then
+    titleFS:SetPoint("RIGHT", pinBtn, "LEFT", -4, 0)
+  elseif paw then
+    titleFS:SetPoint("RIGHT", paw, "LEFT", -4, 0)
+  else
+    titleFS:SetPoint("RIGHT", row, "RIGHT", 0, 0)
+  end
+  titleFS:SetJustifyH("LEFT")
+  titleFS:SetJustifyV("MIDDLE")
+  titleFS:SetWordWrap(false)
+
+  return statusFS, regionFS, titleFS
+end
+
 local function BuildUI()
-  local ROW_H    = 15
-  local ROW_STEP = 16
-  local ROW_W    = 312
-  local LIST_TOP = -82
+  local rowH, rowStep = RowMetrics()
+  local ROW_W = UI_LAYOUT.frameW - UI_LAYOUT.padX * 2
+  local LIST_TOP = UI_LAYOUT.listTop
 
   local f = CreateFrame("Frame", "SquirrelLoveFrame", UIParent, "BackdropTemplate")
-  f:SetSize(340, 428)
+  f:SetSize(UI_LAYOUT.frameW, UI_LAYOUT.frameH)
   f:SetPoint(
     SquirrelLoveDB.point or "CENTER", UIParent,
     SquirrelLoveDB.point or "CENTER",
@@ -1005,12 +1094,21 @@ local function BuildUI()
   local pageText = f:CreateFontString(nil, "OVERLAY", "GameFontDisable")
   pageText:SetPoint("TOP", summary, "BOTTOM", 0, -3)
 
+  local headerRow = CreateFrame("Frame", nil, f)
+  headerRow:SetSize(ROW_W, rowH)
+  headerRow:SetPoint("TOPLEFT", f, "TOPLEFT", UI_LAYOUT.padX, LIST_TOP + rowStep)
+  local hdrStatus, hdrRegion, hdrTitle = CreateRowColumns(headerRow, { rowH = rowH })
+  hdrStatus:SetText("")
+  hdrRegion:SetText("|cff888888Exp.|r")
+  hdrTitle:SetText("|cff888888Achievement|r")
+
   local rows = {}
   for i = 1, #ACHIEVEMENTS do
     local achID = ACHIEVEMENTS[i].id
     local row = CreateFrame("Button", nil, f)
-    row:SetSize(ROW_W, ROW_H)
-    row:SetPoint("TOPLEFT", f, "TOPLEFT", 14, LIST_TOP - (i - 1) * ROW_STEP)
+    row:SetSize(ROW_W, rowH)
+    row:SetPoint("TOPLEFT", f, "TOPLEFT", UI_LAYOUT.padX, LIST_TOP - (i - 1) * rowStep)
+    row:SetClipsChildren(true)
 
     local hl = row:CreateTexture(nil, "HIGHLIGHT")
     hl:SetAllPoints()
@@ -1054,23 +1152,9 @@ local function BuildUI()
       pinBtn:Hide()
     end
 
-    local statusFS = row:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
-    statusFS:SetSize(50, ROW_H)
-    statusFS:SetPoint("LEFT", row, "LEFT", 0, 0)
-    statusFS:SetJustifyH("RIGHT")
-    statusFS:SetWordWrap(false)
-
-    local regionFS = row:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
-    regionFS:SetSize(52, ROW_H)
-    regionFS:SetPoint("LEFT", statusFS, "RIGHT", 6, 0)
-    regionFS:SetJustifyH("LEFT")
-    regionFS:SetWordWrap(false)
-
-    local titleFS = row:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
-    titleFS:SetPoint("LEFT", regionFS, "RIGHT", 6, 0)
-    titleFS:SetPoint("RIGHT", pinBtn, "LEFT", -4, 0)
-    titleFS:SetJustifyH("LEFT")
-    titleFS:SetWordWrap(false)
+    local statusFS, regionFS, titleFS = CreateRowColumns(row, {
+      rowH = rowH, pinBtn = pinBtn, paw = paw,
+    })
 
     row.status = statusFS
     row.region = regionFS
@@ -1104,22 +1188,30 @@ local function BuildUI()
   end
 
   local pestRow = CreateFrame("Button", nil, f)
-  pestRow:SetSize(ROW_W, ROW_H)
-  pestRow:SetPoint("TOPLEFT", f, "TOPLEFT", 14, LIST_TOP - #ACHIEVEMENTS * ROW_STEP)
+  pestRow:SetSize(ROW_W, rowH)
+  pestRow:SetPoint("TOPLEFT", f, "TOPLEFT", UI_LAYOUT.padX, LIST_TOP - #ACHIEVEMENTS * rowStep)
+  pestRow:SetClipsChildren(true)
   local pestHL = pestRow:CreateTexture(nil, "HIGHLIGHT")
   pestHL:SetAllPoints()
   pestHL:SetColorTexture(1, 0.4, 0.4, 0.12)
-  local pestStatusFS = pestRow:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
-  pestStatusFS:SetSize(50, ROW_H)
-  pestStatusFS:SetPoint("LEFT", pestRow, "LEFT", 0, 0)
-  pestStatusFS:SetJustifyH("RIGHT")
-  pestStatusFS:SetWordWrap(false)
-  local pestFS = pestRow:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
-  pestFS:SetPoint("LEFT", pestStatusFS, "RIGHT", 6, 0)
-  pestFS:SetPoint("RIGHT", pestRow, "RIGHT", 0, 0)
-  pestFS:SetJustifyH("LEFT")
-  pestFS:SetWordWrap(false)
+  local pestPin = CreateFrame("Button", nil, pestRow)
+  pestPin:SetSize(14, 14)
+  pestPin:SetPoint("RIGHT", pestRow, "RIGHT", 0, 0)
+  pestPin:SetNormalTexture("Interface\\Icons\\INV_Misc_Map_01")
+  pestPin:SetHighlightTexture("Interface\\Buttons\\ButtonHilight-Square", "ADD")
+  pestPin:SetScript("OnClick", AddKillWaypoints)
+  pestPin:SetScript("OnEnter", function(self)
+    GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+    GameTooltip:SetText("TomTom kill waypoints", 1, 1, 1)
+    GameTooltip:AddLine("Add Pest Control pins.", 0.8, 0.8, 0.8, true)
+    GameTooltip:Show()
+  end)
+  pestPin:SetScript("OnLeave", function() GameTooltip:Hide() end)
+  local pestStatusFS, pestRegionSpacer, pestFS = CreateRowColumns(pestRow, {
+    rowH = rowH, pinBtn = pestPin, showRegion = false,
+  })
   pestRow.status = pestStatusFS
+  pestRow.region = pestRegionSpacer
   pestRow.text   = pestFS
   pestRow.achID = PEST_CONTROL_ID
   pestRow:SetScript("OnClick", function(self)
@@ -1134,21 +1226,6 @@ local function BuildUI()
       end
     end
   end)
-  local pestPin = CreateFrame("Button", nil, pestRow)
-  pestPin:SetSize(14, 14)
-  pestPin:SetPoint("RIGHT", pestRow, "RIGHT", 0, 0)
-  pestPin:SetNormalTexture("Interface\\Icons\\INV_Misc_Map_01")
-  pestPin:SetHighlightTexture("Interface\\Buttons\\ButtonHilight-Square", "ADD")
-  pestPin:SetScript("OnClick", AddKillWaypoints)
-  pestPin:SetScript("OnEnter", function(self)
-    GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
-    GameTooltip:SetText("TomTom kill waypoints", 1, 1, 1)
-    GameTooltip:AddLine("Add Pest Control pins.", 0.8, 0.8, 0.8, true)
-    GameTooltip:Show()
-  end)
-  pestPin:SetScript("OnLeave", function() GameTooltip:Hide() end)
-  pestFS:SetPoint("RIGHT", pestPin, "LEFT", -4, 0)
-
   pestRow:SetScript("OnEnter", function(self)
     GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
     GameTooltip:SetText("Pest Control", 1, 1, 1)
@@ -1216,7 +1293,20 @@ local function BuildUI()
     Print("Rebuilt.")
   end)
 
-  local obj = { frame = f, pestRow = pestRow }
+  local function ReflowList()
+    ApplyListLayout(f, rows, pestRow, LIST_TOP)
+    headerRow:SetPoint("TOPLEFT", f, "TOPLEFT", UI_LAYOUT.padX, LIST_TOP + rowStep)
+  end
+
+  f:RegisterEvent("UI_SCALE_CHANGED")
+  f:RegisterEvent("DISPLAY_SIZE_CHANGED")
+  f:SetScript("OnEvent", function(_, event)
+    if event == "UI_SCALE_CHANGED" or event == "DISPLAY_SIZE_CHANGED" then
+      ReflowList()
+    end
+  end)
+
+  local obj = { frame = f, pestRow = pestRow, rows = rows, ReflowList = ReflowList }
   function obj.Update()
     summary:SetText(("Critters: |cffffd100%d|r  |  Pests: |cffff8855%d|r"):format(
       remaining, pestRemaining))
